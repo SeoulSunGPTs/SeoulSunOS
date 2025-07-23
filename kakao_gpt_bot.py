@@ -11,9 +11,6 @@ app = Flask(__name__)
 @app.route("/webhook", methods=["POST"])
 def webhook():
     try:
-        # 요청 들어온 JSON 전체 로그 출력 (디버깅용)
-        print("요청 데이터:", request.json)
-
         user_message = request.json['userRequest']['utterance']
         prompt = f"""너는 서울 강서구 선정형외과 실장이다. 병원 예약, 위치, 진료시간, 주차 등 안내만 친절한 존댓말로 해줘.
         진료비 등 민감한 건 "전화 문의만 가능합니다"로 답해. 질문: {user_message}"""
@@ -33,9 +30,10 @@ def webhook():
             }
         })
     except Exception as e:
-        # 에러 메시지를 로그에 출력 (디버깅용)
+        # 에러 메시지와 실제로 받은 request 내용을 로그에 모두 출력
         print("에러 발생:", e)
-        return jsonify({"error": str(e)}), 500
+        print("request.json:", request.json)
+        return jsonify({"error": str(e), "req": str(request.json)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

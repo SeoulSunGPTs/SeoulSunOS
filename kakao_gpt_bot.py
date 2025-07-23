@@ -1,12 +1,11 @@
 from flask import Flask, request, jsonify
 import openai
+import os   # 환경변수 사용을 위해 추가!
 
 app = Flask(__name__)
 
-# openai_secretkey.txt 파일에서 키 읽어오기
-with open("openai_secretkey.txt") as f:
-    openai.api_key = f.read().strip()
-
+# 환경변수에서 키 읽어오기
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
